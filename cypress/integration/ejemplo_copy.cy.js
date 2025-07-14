@@ -4,25 +4,27 @@ import 'cypress-file-upload';
 import 'cypress-xpath';
 
 describe("Reto de tablas con funciones", () => {
-  it("automatizar test biblioteca utilizando funciones", () => {
+  it("automatizar test biblioteca identificando el autor de 'Git Pocket Guide'", () => {
     const tiempo = 2000;
+
+    // Intercepta script conflictivo adplus.js
+    cy.intercept('GET', '**/adplus.js', {
+      statusCode: 204,
+      body: '',
+    });
+
     cy.visit("https://demoqa.com/books");
     cy.wait(tiempo);
     cy.title().should('eq', 'DEMOQA');
 
-    cy.get(".rt-td").each(($el, i) => {
-      const textoCelda = $el.text();
+    cy.get(".rt-td").each(($el, index) => {
+      const texto = $el.text();
+      cy.log(`Fila ${index + 1}: ${texto}`);
 
-      cy.log(`Fila ${i + 1}: ${textoCelda}`);
-
-      if (textoCelda.includes("Git Pocket Guide")) {
-        cy.get('.rt-tbody > :nth-child(1) > .rt-tr')
-          .eq(i)
-          .find(':nth-child(4)')
-          .then(($author) => {
-            const autor = $author.text();
-            cy.log(`🔍 El autor de "Git Pocket Guide" es: ${autor}`);
-          });
+      if (texto.includes("Git Pocket Guide")) {
+        cy.get(".rt-td").eq(index + 2).then(($author) => {
+          cy.log(`📚 El autor de 'Git Pocket Guide' es: ${$author.text()}`);
+        });
       }
     });
   });

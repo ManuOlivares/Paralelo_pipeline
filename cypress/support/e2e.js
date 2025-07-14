@@ -14,4 +14,11 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+
+import './commands';
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+  if (err.message.includes('adplus.js')) {
+    return false; // Evita que el test falle por scripts externos
+  }
+});
