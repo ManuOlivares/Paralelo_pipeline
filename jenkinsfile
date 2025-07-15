@@ -1,4 +1,4 @@
-pieline {
+pipeline {
 
     tools {nodejs "node"}
 
